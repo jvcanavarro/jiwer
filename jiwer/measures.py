@@ -189,7 +189,7 @@ def compute_measures(
     )
 
     # Get the operation counts (#hits, #substitutions, #deletions, #insertions)
-    H, S, D, I = _get_operation_counts(truth, hypothesis)
+    H, S, D, I, E = _get_operation_counts(hypothesis, truth)
 
     # Compute Word Error Rate
     wer = float(S + D + I) / float(H + S + D)
@@ -204,6 +204,8 @@ def compute_measures(
     wil = 1 - wip
 
     return {
+        "truth": truth,
+        "hypothesis": hypothesis,
         "wer": wer,
         "mer": mer,
         "wil": wil,
@@ -212,6 +214,7 @@ def compute_measures(
         "substitutions": S,
         "deletions": D,
         "insertions": I,
+        "editops": E,
     }
 
 
@@ -241,19 +244,19 @@ def _preprocess(
 
     # raise an error if the ground truth is empty
     if len(truth) == 0:
-        raise ValueError("the ground truth cannot be an empty")
+        raise ValuVeError("the ground truth cannot be an empty")
 
     # tokenize each word into an integer
-    vocabulary = set(truth + hypothesis)
-    word2char = dict(zip(vocabulary, range(len(vocabulary))))
+    # vocabulary = set(truth + hypothesis)
+    # word2char = dict(zip(vocabulary, range(len(vocabulary))))
 
-    truth_chars = [chr(word2char[w]) for w in truth]
-    hypothesis_chars = [chr(word2char[w]) for w in hypothesis]
+    # truth_chars = [chr(word2char[w]) for w in truth]
+    # hypothesis_chars = [chr(word2char[w]) for w in hypothesis]
 
-    truth_str = "".join(truth_chars)
-    hypothesis_str = "".join(hypothesis_chars)
+    # truth_str = "".join(truth_chars)
+    # hypothesis_str = "".join(hypothesis_chars)
 
-    return truth_str, hypothesis_str
+    return " ".join(truth), " ".join(hypothesis)
 
 
 def _get_operation_counts(
@@ -277,4 +280,4 @@ def _get_operation_counts(
     insertions = sum(1 if op[0] == "insert" else 0 for op in editops)
     hits = len(source_string) - (substitutions + deletions)
 
-    return hits, substitutions, deletions, insertions
+    return hits, substitutions, deletions, insertions, editops

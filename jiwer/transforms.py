@@ -136,7 +136,8 @@ class RemoveWhiteSpace(BaseRemoveTransform):
 
 class RemovePunctuation(BaseRemoveTransform):
     def __init__(self):
-        characters = [c for c in string.punctuation]
+        punctuation = string.punctuation + '”“‘'
+        characters = [c for c in punctuation]
 
         super().__init__(characters)
 
