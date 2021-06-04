@@ -192,7 +192,10 @@ def compute_measures(
     H, S, D, I, E = _get_operation_counts(hypothesis, truth)
 
     # Compute Word Error Rate
-    wer = float(S + D + I) / float(H + S + D)
+    N = float(H + S + D)
+    if N == 0:
+        N = 1
+    wer = float(S + D + I) / N
 
     # Compute Match Error Rate
     mer = float(S + D + I) / float(H + S + D + I)
